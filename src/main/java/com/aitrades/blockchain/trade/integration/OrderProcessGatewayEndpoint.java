@@ -12,6 +12,8 @@ import org.springframework.integration.annotation.Transformer;
 import com.aitrades.blockchain.trade.computation.OrderComputationProcessor;
 import com.aitrades.blockchain.trade.domain.Order;
 import com.aitrades.blockchain.trade.domain.OrderDecision;
+import com.aitrades.blockchain.trade.domain.orderType.OrderTypeRequest;
+import com.aitrades.blockchain.trade.domain.orderType.OrderTypeResponse;
 import com.aitrades.blockchain.trade.domain.side.OrderState;
 import com.aitrades.blockchain.trade.repository.OrderRepository;
 import com.aitrades.blockchain.trade.service.mq.RabbitMqOrderPublisher;
@@ -44,7 +46,13 @@ public class OrderProcessGatewayEndpoint {
 	@ServiceActivator(inputChannel = "tradeOrdercomputationChannel", outputChannel = "transformInputChannel")
 	public Map<String, Object> tradeOrdercomputationChannel(Map<String, Object> tradeOrderMap) throws Exception{
 		Order order = (Order)tradeOrderMap.get(ORDER);
-		return order.getOrderCode() != null && orderStateCheck(order) ? orderComputationProcessor.processComputation(order, tradeOrderMap) : tradeOrderMap;
+		if(order.getOrderCode() != null && orderStateCheck(order)) {
+			OrderTypeResponse orderTypeResponse = orderComputationProcessor.processComputation(order);
+			 if(orderTypeResponse != null) {
+				 tradeOrderMap.put(ORDER_DECISION, order.getOrderEntity().getOrderSide());
+			 }
+		}
+		return tradeOrderMap;
 	}
 
 	@ServiceActivator(inputChannel = "transformInputChannel", outputChannel = "saveToMongoBasedOnOrderTypeChannel")

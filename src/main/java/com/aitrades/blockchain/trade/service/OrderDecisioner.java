@@ -1,17 +1,14 @@
 package com.aitrades.blockchain.trade.service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.aitrades.blockchain.trade.client.DexSubGraphPriceFactoryClient;
-import com.aitrades.blockchain.trade.domain.Order;
 import com.aitrades.blockchain.trade.domain.OrderDecision;
-import com.aitrades.blockchain.trade.domain.side.OrderSide;
+import com.aitrades.blockchain.trade.domain.orderType.OrderTypeRequest;
+import com.aitrades.blockchain.trade.domain.orderType.OrderTypeResponse;
 
 @Service
 //TODO: This class needs serious re-factoring of all dirty code.
@@ -20,103 +17,98 @@ public class OrderDecisioner {
 	@Autowired
 	private DexSubGraphPriceFactoryClient dexSubGraphPriceFactoryClient;
 	
-	private static final String ORDER_DECISION = "ORDER_DECISION";
-
-	@Async
-	public Map<String, Object> processLimitOrder(Order order,  Map<String, Object> tradeOrderMap) {
+	public OrderTypeResponse processLimitOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(order.getRoute()).getPriceOfTicker(order.getPairData().getPairAddress().getAddress());
-			if(OrderSide.BUY.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal().compareTo(currentPriceOfTicker) <= 0) {
-					tradeOrderMap.put(ORDER_DECISION, OrderDecision.BUY);
-				}
+			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress());
+			if(orderTypeRequest.getPrice().compareTo(currentPriceOfTicker) <= 0) {
+				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
+				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
+				return orderTypeResponse;
 			}
-			if(OrderSide.SELL.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal().compareTo(currentPriceOfTicker) <= 0) {
-					tradeOrderMap.put(ORDER_DECISION, OrderDecision.SELL);
-				}
-			}
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return tradeOrderMap;
+		return null;
 	}
 	
-	@Async
-	public Map<String, Object> processStopLossOrder(Order order,  Map<String, Object> tradeOrderMap) {
+	public OrderTypeResponse processStopLossOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(order.getRoute()).getPriceOfTicker(order.getPairData().getPairAddress().getAddress());
-			if(OrderSide.BUY.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal().compareTo(currentPriceOfTicker) >= 0) {
-					tradeOrderMap.put(ORDER_DECISION, OrderDecision.BUY);
-				}
-			}
-			
-			if(OrderSide.SELL.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal().compareTo(currentPriceOfTicker)  >= 0) {
-					tradeOrderMap.put(ORDER_DECISION, OrderDecision.SELL);
-				}
+			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress());
+			if(orderTypeRequest.getPrice().compareTo(currentPriceOfTicker) >= 0) {
+				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
+				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return tradeOrderMap;
+		return null;
 	}
 	
-	public Map<String, Object> processStopLimitOrder(Order order,  Map<String, Object> tradeOrderMap) {
+	public OrderTypeResponse processStopLimitOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			processStopLossOrder(order, tradeOrderMap);
-			processLimitOrder(order, tradeOrderMap);
+			//processStopLossOrder(tradeOrderMap);
+			//processLimitOrder(tradeOrderMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return tradeOrderMap;
+		return null;
 	}
 	// in trail stop only we need to persist order
-	public Map<String, Object> processTrailingStopOrder(Order order,  Map<String, Object> tradeOrderMap) {
+	public OrderTypeResponse processTrailingStopOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(order.getRoute()).getPriceOfTicker(order.getPairData().getPairAddress().getAddress());
-			if(OrderSide.BUY.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal().compareTo(currentPriceOfTicker) >= 0) {                    //25 should be coming from order.
-					BigDecimal adjustedTrailingPrice = currentPriceOfTicker.subtract(currentPriceOfTicker.multiply(new BigDecimal(25).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)));
-					order.getOrderEntity().getTrailingStopOrder().setAdjustedtrailingStopPriceAsBigDecimal(adjustedTrailingPrice);
-				} else if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal().compareTo(currentPriceOfTicker) < 0) {
+			
+			/*BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute())
+					.getPriceOfTicker(orderTypeRequest.getPairAddress());
+			if (OrderSide.BUY.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
+				if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal()
+						.compareTo(currentPriceOfTicker) >= 0) { // 25 should be coming from order. BigDecimal
+																	// adjustedTrailingPrice =
+					currentPriceOfTicker.subtract(currentPriceOfTicker.multiply(
+							new BigDecimal(25).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)));
+					order.getOrderEntity().getTrailingStopOrder()
+							.setAdjustedtrailingStopPriceAsBigDecimal(adjustedTrailingPrice);
+				} else if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal()
+						.compareTo(currentPriceOfTicker) < 0) {
 					tradeOrderMap.put(ORDER_DECISION, OrderDecision.BUY);
 				}
 			}
-			if(OrderSide.SELL.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal().compareTo(currentPriceOfTicker) <= 0) {
-					BigDecimal adjustedTrailingPrice = currentPriceOfTicker.subtract(currentPriceOfTicker.multiply(new BigDecimal(25).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)));
-					order.getOrderEntity().getTrailingStopOrder().setAdjustedtrailingStopPriceAsBigDecimal(adjustedTrailingPrice);
-				} else if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal().compareTo(currentPriceOfTicker) > 0) {
+			if (OrderSide.SELL.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
+				if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal()
+						.compareTo(currentPriceOfTicker) <= 0) {
+					BigDecimal adjustedTrailingPrice = currentPriceOfTicker.subtract(currentPriceOfTicker.multiply(
+							new BigDecimal(25).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)));
+					order.getOrderEntity().getTrailingStopOrder()
+							.setAdjustedtrailingStopPriceAsBigDecimal(adjustedTrailingPrice);
+				} else if (order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal()
+						.compareTo(currentPriceOfTicker) > 0) {
 					tradeOrderMap.put(ORDER_DECISION, OrderDecision.SELL);
 				}
-			}
-		} catch (Exception e) {
+			}*/
+			 } catch (Exception e) {
 			e.printStackTrace();
 		}
-		return tradeOrderMap;
+		return null;
 	}
 
 	// in trail stop only we need to persist order
-	public Map<String, Object> processLimitTrailingStopOrder(Order order,  Map<String, Object> tradeOrderMap) {
+	public OrderTypeResponse processLimitTrailingStopOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(order.getRoute())
-																           .getPriceOfTicker(order.getPairData().getPairAddress().getAddress());
-			if (!order.getOrderEntity().getLimitTrailingStop().isLimitTrailingStopPriceMet()) {
-				if (order.getOrderEntity().getLimitTrailingStop().getAdjustedtrailingStopPriceAsBigDecimal().compareTo(currentPriceOfTicker) >= 0) {
-					order.getOrderEntity().getLimitTrailingStop().setLimitTrailingStopPriceMet(true);// start trail now.
-				}
-			} else {
-				processTrailingStopOrder(order, tradeOrderMap);
-			}
-
-		} catch (Exception e) {
+			/*
+			 * BigDecimal currentPriceOfTicker =
+			 * dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute())
+			 * .getPriceOfTicker(orderTypeRequest.getPairAddress()); if
+			 * (!order.getOrderEntity().getLimitTrailingStop().isLimitTrailingStopPriceMet()
+			 * ) { if (order.getOrderEntity().getLimitTrailingStop().
+			 * getAdjustedtrailingStopPriceAsBigDecimal().compareTo(currentPriceOfTicker) >=
+			 * 0) {
+			 * order.getOrderEntity().getLimitTrailingStop().setLimitTrailingStopPriceMet(
+			 * true);// start trail now. } } else { processTrailingStopOrder(tradeOrderMap);
+			 * }
+			 * 
+			 */} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return tradeOrderMap;
+		return null;
 	}
 
 }

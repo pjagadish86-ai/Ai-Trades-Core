@@ -2,7 +2,7 @@ package com.aitrades.blockchain.trade.domain;
 
 public enum OrderDecision {
 	
-	BUY("BUY",1), SELL("SELL",2);
+	BUY("BUY",1), SELL("SELL",2), TRADE("TRADE", 3);
 	
 	private final String value;
 	private final Integer sortorder;
