@@ -15,7 +15,7 @@ public class OrderTypeComputation implements OrderComputation{
 
 	@Override
 	public OrderTypeResponse marketOrder(OrderTypeRequest orderTypeRequest) throws Exception {
-		return null;
+		return new OrderTypeResponse();
 	}
 
 	@Override

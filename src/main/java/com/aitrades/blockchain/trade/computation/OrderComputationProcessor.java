@@ -1,7 +1,5 @@
 package com.aitrades.blockchain.trade.computation;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,31 +16,67 @@ public class OrderComputationProcessor {
 	private OrderTypeComputation orderComputation;
 
 	public OrderTypeResponse processComputation(Order order) throws Exception {
+		
 		if(StringUtils.equalsIgnoreCase(OrderType.LIMIT.name(), order.getOrderEntity().getOrderType())) {
-			return orderComputation.limitOrder(prepareOrderTypeRequest(order.getRoute(), order.getPairData().getPairAddress().getAddress(), order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal()));
-		}else if(StringUtils.equalsIgnoreCase(OrderType.STOPLOSS.name(), order.getOrderEntity().getOrderType())) {
-			 return orderComputation.stopLossOrder(prepareOrderTypeRequest(order.getRoute(), order.getPairData().getPairAddress().getAddress(), order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal()));
-		}else if(StringUtils.equalsIgnoreCase(OrderType.STOPLIMIT.name(), order.getOrderEntity().getOrderType())) {
-			OrderTypeRequest orderTypeRequest = new OrderTypeRequest();
-			return orderComputation.stopLimitOrder(orderTypeRequest);
-		}else if(StringUtils.equalsIgnoreCase(OrderType.TRAILLING_STOP.name(), order.getOrderEntity().getOrderType())) {
-			OrderTypeRequest orderTypeRequest = new OrderTypeRequest();
-			 return orderComputation.trailingStopOrder(orderTypeRequest);
-		}else if(StringUtils.equalsIgnoreCase(OrderType.LIMIT_TRAILLING_STOP.name(), order.getOrderEntity().getOrderType())) {
-			OrderTypeRequest orderTypeRequest = new OrderTypeRequest();
-			 return orderComputation.limitTrailingStopOrder(orderTypeRequest);
-		}else if(StringUtils.equalsIgnoreCase(OrderType.MARKET.name(), order.getOrderEntity().getOrderType())) {
-			OrderTypeRequest orderTypeRequest = new OrderTypeRequest();
-			 return orderComputation.marketOrder(orderTypeRequest);
+			return orderComputation.limitOrder(prepareOrderTypeRequest(order));
 		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.STOPLOSS.name(), order.getOrderEntity().getOrderType())) {
+			 return orderComputation.stopLossOrder(prepareOrderTypeRequest(order));
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.STOPLIMIT.name(), order.getOrderEntity().getOrderType())) {
+			return orderComputation.stopLimitOrder(prepareOrderTypeRequest(order));
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.TRAILLING_STOP.name(), order.getOrderEntity().getOrderType())) {
+			 return orderComputation.trailingStopOrder(prepareOrderTypeRequest(order));
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.LIMIT_TRAILLING_STOP.name(), order.getOrderEntity().getOrderType())) {
+			 return orderComputation.limitTrailingStopOrder(prepareOrderTypeRequest(order));
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.MARKET.name(), order.getOrderEntity().getOrderType())) {
+			 return orderComputation.marketOrder(prepareOrderTypeRequest(order));
+		}
+		
 		return null;
 	}
 	
-	private OrderTypeRequest prepareOrderTypeRequest(String route, String pairAddress, BigDecimal price) {
+	private OrderTypeRequest prepareOrderTypeRequest(Order order) {
+		
 		OrderTypeRequest orderTypeRequest = new OrderTypeRequest();
-		orderTypeRequest.setRoute(route);
-		orderTypeRequest.setPairAddress(pairAddress);
-		orderTypeRequest.setPrice(price);
+		orderTypeRequest.setRoute(order.getRoute());
+		orderTypeRequest.setPairAddress(order.getPairData().getPairAddress().getAddress());
+		
+		String orderType = order.getOrderEntity().getOrderType();
+		
+		if(StringUtils.equalsIgnoreCase(OrderType.LIMIT.name(), orderType)) {
+			orderTypeRequest.setLimitPrice(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal());
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.STOPLOSS.name(), orderType)) {
+			orderTypeRequest.setStopPrice(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal());
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.STOPLIMIT.name(), orderType)) {
+			orderTypeRequest.setLimitPrice(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal());
+			orderTypeRequest.setStopPrice(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal());
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.TRAILLING_STOP.name(), orderType)) {
+			orderTypeRequest.setTrailPercent(order.getOrderEntity().getTrailingStopOrder().getTrailingStopPercentBigDecimal());	
+			orderTypeRequest.setAdjustedPrice(order.getOrderEntity().getTrailingStopOrder().getAdjustedtrailingStopPriceAsBigDecimal());
+		}
+		
+		else if(StringUtils.equalsIgnoreCase(OrderType.LIMIT_TRAILLING_STOP.name(), orderType)) {
+			orderTypeRequest.setLimitTrailingStopPriceMet(order.getOrderEntity().getLimitTrailingStop().isLimitTrailingStopPriceMet());
+			orderTypeRequest.setLimitPrice(order.getOrderEntity().getLimitTrailingStop().getLimitPriceBigDecimal());
+			orderTypeRequest.setTrailPercent(order.getOrderEntity().getLimitTrailingStop().getTrailingStopPercentBigDecimal());	
+			orderTypeRequest.setAdjustedPrice(order.getOrderEntity().getLimitTrailingStop().getAdjustedtrailingStopPriceAsBigDecimal());
+		}
+		
 		return orderTypeRequest;
 	}
 

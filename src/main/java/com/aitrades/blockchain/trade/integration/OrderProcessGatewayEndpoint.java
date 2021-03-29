@@ -12,7 +12,7 @@ import org.springframework.integration.annotation.Transformer;
 import com.aitrades.blockchain.trade.computation.OrderComputationProcessor;
 import com.aitrades.blockchain.trade.domain.Order;
 import com.aitrades.blockchain.trade.domain.OrderDecision;
-import com.aitrades.blockchain.trade.domain.orderType.OrderTypeRequest;
+import com.aitrades.blockchain.trade.domain.OrderType;
 import com.aitrades.blockchain.trade.domain.orderType.OrderTypeResponse;
 import com.aitrades.blockchain.trade.domain.side.OrderState;
 import com.aitrades.blockchain.trade.repository.OrderRepository;
@@ -49,7 +49,18 @@ public class OrderProcessGatewayEndpoint {
 		if(order.getOrderCode() != null && orderStateCheck(order)) {
 			OrderTypeResponse orderTypeResponse = orderComputationProcessor.processComputation(order);
 			 if(orderTypeResponse != null) {
-				 tradeOrderMap.put(ORDER_DECISION, order.getOrderEntity().getOrderSide());
+				 if(orderTypeResponse.getAdjustedPrice() != null) {
+					 if(order.getOrderEntity().getOrderType().equalsIgnoreCase(OrderType.TRAILLING_STOP.name())) {
+						 order.getOrderEntity().getTrailingStopOrder().setAdjustedtrailingStopPriceAsBigDecimal(orderTypeResponse.getAdjustedPrice());
+					 }
+					 if(order.getOrderEntity().getOrderType().equalsIgnoreCase(OrderType.LIMIT_TRAILLING_STOP.name())) {
+						 order.getOrderEntity().getLimitTrailingStop().setLimitTrailingStopPriceMet(orderTypeResponse.isLimitTrailStopPriceMet());
+						 order.getOrderEntity().getLimitTrailingStop().setAdjustedtrailingStopPriceAsBigDecimal(orderTypeResponse.getAdjustedPrice());
+					 }
+				 }
+				 if(orderTypeResponse.getDecision() != null) {
+					 tradeOrderMap.put(ORDER_DECISION, order.getOrderEntity().getOrderSide());
+				 }
 			 }
 		}
 		return tradeOrderMap;

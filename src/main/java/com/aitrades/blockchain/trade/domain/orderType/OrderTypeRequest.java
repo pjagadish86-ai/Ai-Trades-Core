@@ -6,9 +6,12 @@ public class OrderTypeRequest {
 
 	private String route;
 	private String pairAddress;
-	private BigDecimal price;
+	private BigDecimal limitPrice;
 	private BigDecimal adjustedPrice;
 	private BigDecimal trailPercent;
+	private BigDecimal stopPrice;
+	
+	private boolean isLimitTrailingStopPriceMet;
 	
 	public String getRoute() {
 		return route;
@@ -22,11 +25,11 @@ public class OrderTypeRequest {
 	public void setPairAddress(String pairAddress) {
 		this.pairAddress = pairAddress;
 	}
-	public BigDecimal getPrice() {
-		return price;
+	public BigDecimal getLimitPrice() {
+		return limitPrice;
 	}
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setLimitPrice(BigDecimal limitPrice) {
+		this.limitPrice = limitPrice;
 	}
 	public BigDecimal getAdjustedPrice() {
 		return adjustedPrice;
@@ -39,6 +42,18 @@ public class OrderTypeRequest {
 	}
 	public void setTrailPercent(BigDecimal trailPercent) {
 		this.trailPercent = trailPercent;
+	}
+	public BigDecimal getStopPrice() {
+		return stopPrice;
+	}
+	public void setStopPrice(BigDecimal stopPrice) {
+		this.stopPrice = stopPrice;
+	}
+	public boolean isLimitTrailingStopPriceMet() {
+		return isLimitTrailingStopPriceMet;
+	}
+	public void setLimitTrailingStopPriceMet(boolean isLimitTrailingStopPriceMet) {
+		this.isLimitTrailingStopPriceMet = isLimitTrailingStopPriceMet;
 	}
 	
 }
