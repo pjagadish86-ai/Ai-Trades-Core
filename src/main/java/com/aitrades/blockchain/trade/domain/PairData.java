@@ -4,18 +4,19 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class TradeOrderMessage {
-
-	public Order order;
-
-	public TradeOrderMessage(Order order) {
-		this.order = order;
+public class PairData {
+	
+	private Ticker pairAddress;
+	
+	public Ticker getPairAddress() {
+		return pairAddress;
 	}
 
-	public Order getOrder() {
-		return order;
+	public void setPairAddress(Ticker pairAddress) {
+		this.pairAddress = pairAddress;
 	}
 	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);

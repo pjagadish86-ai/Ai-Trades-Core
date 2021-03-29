@@ -1,16 +1,19 @@
 package com.aitrades.blockchain.trade.repository;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import javax.annotation.Resource;
+
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.aitrades.blockchain.trade.domain.Order;
 
-import reactor.core.publisher.Mono;
-
 @Repository
-public interface OrderRepository extends ReactiveMongoRepository<Order, String> {
+public class OrderRepository {
 
-	Mono<Order> insert(final Order wallet);
+	@Resource(name = "orderMongoTemplate")
+	public ReactiveMongoTemplate orderMongoTemplate;
 	
+	public void updateOrder(Order order) {
+		orderMongoTemplate.save(order);
+	}
 }
-
