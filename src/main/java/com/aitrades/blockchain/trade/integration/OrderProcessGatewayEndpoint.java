@@ -90,7 +90,7 @@ public class OrderProcessGatewayEndpoint {
 	public Map<String, Object> sendToOrderSubmitQueueChannel(Map<String, Object> tradeOrderMap) throws Exception{
 		Order order = (Order)tradeOrderMap.get(ORDER);
 		if(order.getOrderCode() != null && order.getOrderCode().equals(84)) {
-			rabbitMqOrderPublisher.sendOrder((OrderDecision)tradeOrderMap.get(ORDER_DECISION), order);
+			rabbitMqOrderPublisher.sendOrder((String)tradeOrderMap.get(ORDER_DECISION), order);
 		}
 		return tradeOrderMap;
 	}

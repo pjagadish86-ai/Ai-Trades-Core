@@ -16,10 +16,10 @@ public class RabbitMqOrderPublisher {
 	public RabbitMqSellOrderPublisher sellOrderPublisher;
 	
 
-	public void sendOrder(OrderDecision orderDecision, Order order) {
-		if(orderDecision.equals(OrderDecision.BUY)) {
+	public void sendOrder(String orderDecision, Order order) {
+		if(orderDecision.equals(OrderDecision.BUY.name())) {
 			buyOrderPublisher.send(order);
-		}else if(orderDecision.equals(OrderDecision.SELL)) {
+		}else if(orderDecision.equals(OrderDecision.SELL.name())) {
 			sellOrderPublisher.send(order);
 		}
 	}
