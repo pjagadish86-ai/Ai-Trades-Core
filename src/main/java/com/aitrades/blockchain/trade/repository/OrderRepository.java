@@ -14,6 +14,6 @@ public class OrderRepository {
 	public ReactiveMongoTemplate orderMongoTemplate;
 	
 	public void updateOrder(Order order) {
-		orderMongoTemplate.save(order);
+		orderMongoTemplate.save(order).block();
 	}
 }

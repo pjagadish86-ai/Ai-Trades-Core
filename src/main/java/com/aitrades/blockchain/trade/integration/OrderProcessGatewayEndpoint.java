@@ -1,13 +1,11 @@
 package com.aitrades.blockchain.trade.integration;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.annotation.Transformer;
 
@@ -18,7 +16,6 @@ import com.aitrades.blockchain.trade.domain.side.OrderState;
 import com.aitrades.blockchain.trade.repository.OrderRepository;
 import com.aitrades.blockchain.trade.service.mq.RabbitMqOrderPublisher;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.jsoniter.JsonIterator;
 public class OrderProcessGatewayEndpoint {
 	
 	private static final String ORDER = "ORDER";

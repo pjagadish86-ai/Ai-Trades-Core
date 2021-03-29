@@ -32,7 +32,7 @@ public class OrderDecisioner {
 				}
 			}
 			if(OrderSide.SELL.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal().compareTo(currentPriceOfTicker) >= 0) {
+				if(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal().compareTo(currentPriceOfTicker) <= 0) {
 					tradeOrderMap.put(ORDER_DECISION, OrderDecision.SELL);
 				}
 			}
@@ -55,7 +55,7 @@ public class OrderDecisioner {
 			}
 			
 			if(OrderSide.SELL.name().equalsIgnoreCase(order.getOrderEntity().getOrderSide())) {
-				if(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal().compareTo(currentPriceOfTicker)  <= 0) {
+				if(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal().compareTo(currentPriceOfTicker)  >= 0) {
 					tradeOrderMap.put(ORDER_DECISION, OrderDecision.SELL);
 				}
 			}
