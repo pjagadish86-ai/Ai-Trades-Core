@@ -10,12 +10,15 @@ import com.aitrades.blockchain.trade.service.OrderDecisioner;
 @Service
 public class OrderTypeComputation implements OrderComputation{
 	
+	private static final String TRADE = "TRADE";
 	@Autowired
 	private OrderDecisioner orderDecisioner;
 
 	@Override
 	public OrderTypeResponse marketOrder(OrderTypeRequest orderTypeRequest) throws Exception {
-		return new OrderTypeResponse();
+		OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
+		orderTypeResponse.setDecision(TRADE);
+		return orderTypeResponse;
 	}
 
 	@Override
