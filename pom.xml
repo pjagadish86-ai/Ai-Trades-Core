@@ -158,6 +158,11 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+		  <groupId>org.firestack</groupId>
+		  <artifactId>laksaj</artifactId>
+		  <version>1.0.5-RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
