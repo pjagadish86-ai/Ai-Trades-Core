@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableAsync
 public class Application {
 	
-	private static final String ENDPOINT_WSS = "wss://eth-ropsten.ws.alchemyapi.io/v2/rbcu5rCKQjynzoU_TTGtTvamSnagl9BU";
+	private static final String ENDPOINT_WSS = "wss://eth-mainnet.ws.alchemyapi.io/v2/9XymsgNnaJBVR1KHUM6aH9dG2CU1FJ-2";
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
