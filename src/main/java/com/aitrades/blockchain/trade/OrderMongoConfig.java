@@ -1,6 +1,5 @@
 package com.aitrades.blockchain.trade;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
@@ -11,16 +10,15 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = { "com.aitrades.blockchain.trade.repository"})
 public class OrderMongoConfig extends AbstractReactiveMongoConfiguration {
 	
-	@Autowired
-	private com.mongodb.reactivestreams.client.MongoClient client;
+	private static final String ORDER = "order";
 
 	@Override
 	protected String getDatabaseName() {
-		return "order";
+		return ORDER;
 	}
 
 	@Bean(name = "orderMongoTemplate")
-	public ReactiveMongoTemplate buyOrderMongoTemplate() {
+	public ReactiveMongoTemplate buyOrderMongoTemplate(com.mongodb.reactivestreams.client.MongoClient client) {
 		return new ReactiveMongoTemplate(client, getDatabaseName());
 	}
 }

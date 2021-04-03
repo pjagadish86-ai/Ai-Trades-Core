@@ -22,14 +22,11 @@ public class GlobalErrorHandler {
 		try {
 			
 			Object object = ((MessagingException) message.getPayload()).getFailedMessage().getPayload();
-			if(object instanceof List){
-			    if(((List)object).size() > 0 && (((List)object).get(0) instanceof Order)){
-			    	List<Order> orders  = (List<Order>)object;
-			    	for(Order order : orders) {
-						orderRepository.updateAvail(order);	
-					}
-			    
-			    }
+			if(object instanceof List && !((List)object).isEmpty() && (((List)object).get(0) instanceof Order)){
+				List<Order> orders  = (List<Order>)object;
+		    	for(Order order : orders) {
+					orderRepository.updateAvail(order);	
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

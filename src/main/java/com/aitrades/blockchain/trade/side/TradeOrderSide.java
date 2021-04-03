@@ -2,7 +2,6 @@ package com.aitrades.blockchain.trade.side;
 
 
 public enum TradeOrderSide {
-	//TODO: Do we need Cancel?
 	BUY("BUY", 1), SELL("SELL", 2), CANCEL("CANCEL", 3);
 
 	private final String value;
@@ -23,7 +22,7 @@ public enum TradeOrderSide {
 
 	public static TradeOrderSide fromValue(String value) {
 		for (final TradeOrderSide tradeSide : TradeOrderSide.values()) {
-			if (tradeSide.value.equals(value)) {
+			if (tradeSide.value.equalsIgnoreCase(value)) {
 				return tradeSide;
 			}
 		}
@@ -33,7 +32,7 @@ public enum TradeOrderSide {
 	public static TradeOrderSide fromName(String name) {
 
 		for (final TradeOrderSide tradeSide : TradeOrderSide.values()) {
-			if (tradeSide.name().equals(name)) {
+			if (tradeSide.name().equalsIgnoreCase(name)) {
 				return tradeSide;
 			}
 		}

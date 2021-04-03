@@ -65,7 +65,6 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 			
 			return calculateTickerPrice(pairPrice, ethPrice);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

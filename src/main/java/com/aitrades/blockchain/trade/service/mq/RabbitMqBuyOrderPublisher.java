@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.aitrades.blockchain.trade.domain.Order;
@@ -20,6 +21,7 @@ public class RabbitMqBuyOrderPublisher {
 	@Resource(name = "orderSubmitRabbitTemplate")
 	public AmqpTemplate amqpTemplate;
 
+	@Async
 	public void send(Order transactionRequest) {
 		amqpTemplate.convertAndSend(orderSubmitBuyExchangeName, orderSubmitBuyRoutingkey, transactionRequest);
 		System.out.println("Send msg = " + transactionRequest);

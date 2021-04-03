@@ -13,7 +13,6 @@ public enum TradeOrderState {
 		this.sortorder = sortorder;
 	}
 	
-	
 	public String getValue() {
 		return value;
 	}
@@ -23,7 +22,7 @@ public enum TradeOrderState {
 	
 	public static TradeOrderState fromValue(String value) {
 		for (final TradeOrderState orderStatus : TradeOrderState.values()) {
-			if (orderStatus.value.equals(value)) {
+			if (orderStatus.value.equalsIgnoreCase(value)) {
 				return orderStatus;
 			}
 		}
@@ -33,7 +32,7 @@ public enum TradeOrderState {
 	public static TradeOrderState fromName(String name) {
 
 		for (final TradeOrderState orderType : TradeOrderState.values()) {
-			if (orderType.name().equals(name)) {
+			if (orderType.name().equalsIgnoreCase(name)) {
 				return orderType;
 			}
 		}

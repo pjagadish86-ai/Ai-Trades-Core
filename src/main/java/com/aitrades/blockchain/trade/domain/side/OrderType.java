@@ -27,7 +27,7 @@ public enum OrderType {
 
 	public static OrderType fromValue(String value) {
 		for (final OrderType orderType : OrderType.values()) {
-			if (orderType.value.equals(value)) {
+			if (orderType.value.equalsIgnoreCase(value)) {
 				return orderType;
 			}
 		}
@@ -37,7 +37,7 @@ public enum OrderType {
 	public static OrderType fromName(String name) {
 
 		for (final OrderType orderType : OrderType.values()) {
-			if (orderType.name().equals(name)) {
+			if (orderType.name().equalsIgnoreCase(name)) {
 				return orderType;
 			}
 		}

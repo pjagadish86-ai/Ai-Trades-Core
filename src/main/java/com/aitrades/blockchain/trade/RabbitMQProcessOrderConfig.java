@@ -43,10 +43,8 @@ public class RabbitMQProcessOrderConfig {
     public SimpleMessageListenerContainer orderSubmitBuyMessageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
         container.setQueues(orderProcessQueue());
-      //  container.setMessageListener(new MessageListenerAdapter(new HelloWorldHandler()));
         container.setConcurrentConsumers(2);
         container.setDefaultRequeueRejected(false);
-//	        container.setAdviceChain(new Advice[]{interceptor()});
         return container;
     }
 

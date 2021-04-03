@@ -27,7 +27,7 @@ public enum TradeOrderType {
 
 	public static TradeOrderType fromValue(String value) {
 		for (final TradeOrderType orderType : TradeOrderType.values()) {
-			if (orderType.value.equals(value)) {
+			if (orderType.value.equalsIgnoreCase(value)) {
 				return orderType;
 			}
 		}
@@ -37,7 +37,7 @@ public enum TradeOrderType {
 	public static TradeOrderType fromName(String name) {
 
 		for (final TradeOrderType orderType : TradeOrderType.values()) {
-			if (orderType.name().equals(name)) {
+			if (orderType.name().equalsIgnoreCase(name)) {
 				return orderType;
 			}
 		}

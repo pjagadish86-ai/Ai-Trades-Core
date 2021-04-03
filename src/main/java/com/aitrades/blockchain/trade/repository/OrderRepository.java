@@ -13,6 +13,11 @@ import com.aitrades.blockchain.trade.domain.Order;
 @Repository
 public class OrderRepository {
 
+	private static final String ID = "id";
+	private static final String LOCK = "LOCK";
+	private static final String AVAL = "AVAL";
+	private static final String READ = "read";
+	
 	@Resource(name = "orderMongoTemplate")
 	public ReactiveMongoTemplate orderMongoTemplate;
 	
@@ -22,18 +27,17 @@ public class OrderRepository {
 	
 	public void updateLock(Order order) {
 		Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(order.getId()));
+        query.addCriteria(Criteria.where(ID).is(order.getId()));
         Update update = new Update();
-        update.set("read", "LOCK");
+        update.set(READ, LOCK);
         orderMongoTemplate.updateFirst(query, update, Order.class).block();
 	}
 	
 	public void updateAvail(Order order) {
 		Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(order.getId()));
+        query.addCriteria(Criteria.where(ID).is(order.getId()));
         Update update = new Update();
-        update.set("read", "AVAL");
-     //   update.set("counter", order.getCounter()+1); TODO: Come back
+        update.set(READ, AVAL);
         orderMongoTemplate.updateFirst(query, update, Order.class).block();
 	}
 }
