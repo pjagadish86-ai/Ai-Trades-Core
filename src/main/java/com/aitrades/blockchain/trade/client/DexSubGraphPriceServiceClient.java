@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Service;
 
 import com.aitrades.blockchain.trade.domain.price.EthPrice;
@@ -88,11 +87,10 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 	}
 	
 	private EthPrice getEthPriceFrmGraph() throws IOException {
-		CloseableHttpClient ethHttpClient =HttpClients.createMinimal();
 		HttpPost post = new HttpPost(UNISWAP_SUBGRAPH_URL);
         post.setEntity(new StringEntity(QUERY_ETH_PRICE));
         try {
-            return ethPriceObjectReader.readValue(ethHttpClient.execute(post).getEntity().getContent());
+            return ethPriceObjectReader.readValue(closeableHttpClient.execute(post).getEntity().getContent());
         }catch (Exception e) {
         	e.printStackTrace();
 		}
@@ -100,7 +98,6 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 	}
 	//TODO: ugly code
 	private PairPrice getPairDataFromUniswap(String pairAddress) throws IOException {
-		CloseableHttpClient pairPriceHttpClient =HttpClients.createMinimal();
 		StringBuffer builder = new StringBuffer();
 		builder.append(QUERY_PAIR_DATA_0);
 		builder.append(QUERY_PAIR_DATA_1);
@@ -110,7 +107,7 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
         HttpPost post = new HttpPost(UNISWAP_SUBGRAPH_URL);
         post.setEntity(new StringEntity(builder.toString()));
         try {
-			return pairPriceObjectReader.readValue(pairPriceHttpClient.execute(post).getEntity().getContent());
+			return pairPriceObjectReader.readValue(closeableHttpClient.execute(post).getEntity().getContent());
         }catch (Exception e) {
         	e.printStackTrace();
 		}
