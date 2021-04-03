@@ -11,6 +11,7 @@ import com.aitrades.blockchain.trade.service.OrderDecisioner;
 public class OrderTypeComputation implements OrderComputation{
 	
 	private static final String TRADE = "TRADE";
+	
 	@Autowired
 	private OrderDecisioner orderDecisioner;
 

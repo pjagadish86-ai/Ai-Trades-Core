@@ -11,7 +11,6 @@ import org.springframework.integration.annotation.Transformer;
 
 import com.aitrades.blockchain.trade.computation.OrderComputationProcessor;
 import com.aitrades.blockchain.trade.domain.Order;
-import com.aitrades.blockchain.trade.domain.OrderDecision;
 import com.aitrades.blockchain.trade.domain.OrderType;
 import com.aitrades.blockchain.trade.domain.orderType.OrderTypeResponse;
 import com.aitrades.blockchain.trade.domain.side.OrderState;
@@ -30,7 +29,7 @@ public class OrderProcessGatewayEndpoint {
 	private OrderRepository orderRepository;
 	
 	@Resource(name= "orderObjectReader")
-	public ObjectReader orderObjectReader;
+	private ObjectReader orderObjectReader;
 	
 	@Autowired
 	private RabbitMqOrderPublisher rabbitMqOrderPublisher;

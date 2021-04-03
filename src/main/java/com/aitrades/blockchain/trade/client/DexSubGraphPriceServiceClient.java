@@ -59,7 +59,7 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 		try {
 			pairPrice = getPairDataFromUniswap(pairAddress);
 			if(pairPrice == null ||  pairPrice.getData() == null || pairPrice.getData().getPair() == null) {
-				return new BigDecimal("1.0");
+				throw new Exception("Unable to find pricess");
 			}
 			ethPrice = getEthPriceFrmGraph();
 			

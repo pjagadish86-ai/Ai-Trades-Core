@@ -13,7 +13,7 @@ import com.aitrades.blockchain.trade.repository.OrderRepository;
 public class GlobalErrorHandler {
 
 	@Autowired
-	public OrderRepository orderRepository;
+	private OrderRepository orderRepository;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ServiceActivator(inputChannel = "errorFlow")

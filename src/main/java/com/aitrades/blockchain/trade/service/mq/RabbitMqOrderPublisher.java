@@ -11,16 +11,16 @@ import com.aitrades.blockchain.trade.domain.OrderDecision;
 public class RabbitMqOrderPublisher {
 
 	@Autowired
-	public RabbitMqBuyOrderPublisher buyOrderPublisher;
+	private RabbitMqBuyOrderPublisher buyOrderPublisher;
 	
 	@Autowired
-	public RabbitMqSellOrderPublisher sellOrderPublisher;
+	private RabbitMqSellOrderPublisher sellOrderPublisher;
 	
 	@Async
 	public void sendOrder(String orderDecision, Order order) {
-		if(orderDecision.equals(OrderDecision.BUY.name())) {
+		if(orderDecision.equalsIgnoreCase(OrderDecision.BUY.name())) {
 			buyOrderPublisher.send(order);
-		}else if(orderDecision.equals(OrderDecision.SELL.name())) {
+		}else if(orderDecision.equalsIgnoreCase(OrderDecision.SELL.name())) {
 			sellOrderPublisher.send(order);
 		}
 	}
