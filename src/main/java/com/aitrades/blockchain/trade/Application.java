@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Application {
 	
 	private static final String ENDPOINT_WSS = "wss://eth-mainnet.ws.alchemyapi.io/v2/9XymsgNnaJBVR1KHUM6aH9dG2CU1FJ-2";
+	private static final String BSC_ENDPOINT_WSS ="wss://holy-twilight-violet.bsc.quiknode.pro/9ccdc8c6748f92a972bc9c9c1b8b56de961c0fc6/";
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -43,10 +44,22 @@ public class Application {
 	
 	@Bean(name = "web3bscjClient")
 	public Web3j web3bscjClient() {
-		return Web3j.build(webSocketService());
+		return Web3j.build(webBSCSocketService());
 	}
 	
-	@Bean
+	@Bean(name = "webBSCSocketService")
+	public WebSocketService webBSCSocketService() {
+		WebSocketService webSocketService = new WebSocketService(new WebSocketClient(parseURI(BSC_ENDPOINT_WSS)), false);
+		try {
+			webSocketService.connect();
+		} catch (ConnectException e) {
+			e.printStackTrace();
+		}
+		return webSocketService;
+	}
+
+	
+	@Bean(name = "webSocketService")
 	public WebSocketService webSocketService() {
 		WebSocketService webSocketService = new WebSocketService(new WebSocketClient(parseURI(ENDPOINT_WSS)), false);
 		try {
