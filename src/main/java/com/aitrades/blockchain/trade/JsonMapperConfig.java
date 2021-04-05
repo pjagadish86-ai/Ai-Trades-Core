@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.aitrades.blockchain.trade.domain.Order;
+import com.aitrades.blockchain.trade.domain.price.Cryptonator;
 import com.aitrades.blockchain.trade.domain.price.EthPrice;
 import com.aitrades.blockchain.trade.domain.price.PairPrice;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,5 +33,10 @@ public class JsonMapperConfig {
 	@Bean(name= "orderObjectReader")
 	public ObjectReader orderObjectReader() {
 		return objectMapper().readerFor(Order.class);
+	}
+	
+	@Bean(name= "cryptonatorObjectReader")
+	public ObjectReader cryptonatorObjectReader() {
+		return objectMapper().readerFor(Cryptonator.class);
 	}
 }

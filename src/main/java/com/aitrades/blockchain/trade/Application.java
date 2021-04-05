@@ -112,4 +112,8 @@ public class Application {
 		return HttpClients.createMinimal();	
 	}
     
+	@Bean(name ="bscPriceHttpClient")
+	public CloseableHttpClient bscPriceHttpClient() {
+		return HttpClients.createMinimal();	
+	}
 }

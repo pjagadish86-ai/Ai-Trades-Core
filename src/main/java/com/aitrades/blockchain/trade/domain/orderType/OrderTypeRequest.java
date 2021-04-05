@@ -2,6 +2,8 @@ package com.aitrades.blockchain.trade.domain.orderType;
 
 import java.math.BigDecimal;
 
+import org.web3j.crypto.Credentials;
+
 public class OrderTypeRequest {
 
 	private String route;
@@ -11,6 +13,7 @@ public class OrderTypeRequest {
 	private BigDecimal trailPercent;
 	private BigDecimal stopPrice;
 	
+	private Credentials credentials;
 	private boolean isLimitTrailingStopPriceMet;
 	
 	public String getRoute() {
@@ -55,5 +58,12 @@ public class OrderTypeRequest {
 	public void setLimitTrailingStopPriceMet(boolean isLimitTrailingStopPriceMet) {
 		this.isLimitTrailingStopPriceMet = isLimitTrailingStopPriceMet;
 	}
+	public Credentials getCredentials() {
+		return credentials;
+	}
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
+	}
+	
 	
 }

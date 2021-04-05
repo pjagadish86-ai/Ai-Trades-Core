@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.Credentials;
 
 import com.aitrades.blockchain.trade.domain.price.EthPrice;
 import com.aitrades.blockchain.trade.domain.price.PairPrice;
@@ -50,7 +51,7 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 	
 	private static final String QUERY_ETH_PRICE ="{\"query\":\"{ bundle(id: \\\"1\\\" ) {   ethPrice }}\",\"variables\":null}";
 	
-	public BigDecimal getPriceOfTicker(String pairAddress) throws Exception {
+	public BigDecimal getPriceOfTicker(String pairAddress, Credentials credentials) throws Exception {
 		if(StringUtils.isBlank(pairAddress)) {
 			throw new Exception("Pair Address is empty");
 		}

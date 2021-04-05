@@ -49,6 +49,7 @@ public class OrderComputationProcessor {
 		OrderTypeRequest orderTypeRequest = new OrderTypeRequest();
 		orderTypeRequest.setRoute(order.getRoute());
 		orderTypeRequest.setPairAddress(order.getPairData().getPairAddress().getAddress());
+		orderTypeRequest.setCredentials(order.getCredentials());
 		
 		String orderType = order.getOrderEntity().getOrderType();
 		

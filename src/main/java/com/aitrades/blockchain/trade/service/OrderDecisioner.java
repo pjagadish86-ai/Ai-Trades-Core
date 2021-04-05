@@ -20,7 +20,7 @@ public class OrderDecisioner {
 	
 	public OrderTypeResponse processLimitOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress());
+			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress(), orderTypeRequest.getCredentials());
 			if(orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
@@ -34,7 +34,7 @@ public class OrderDecisioner {
 	
 	public OrderTypeResponse processStopLossOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress());
+			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress(), orderTypeRequest.getCredentials());
 			if(orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
@@ -48,7 +48,7 @@ public class OrderDecisioner {
 	
 	public OrderTypeResponse processStopLimitOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress());
+			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress(), orderTypeRequest.getCredentials());
 			
 			if(orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
@@ -72,7 +72,7 @@ public class OrderDecisioner {
 		try {
 
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute())
-																		   .getPriceOfTicker(orderTypeRequest.getPairAddress());
+																		   .getPriceOfTicker(orderTypeRequest.getPairAddress(), orderTypeRequest.getCredentials());
 			
 			if (orderTypeRequest.getAdjustedPrice() == null || orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) <= 0) {
 				BigDecimal adjustedTrailingPrice = currentPriceOfTicker.subtract(currentPriceOfTicker.multiply(orderTypeRequest.getTrailPercent().divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)));
@@ -94,7 +94,7 @@ public class OrderDecisioner {
 	// in trail stop only we need to persist order
 	public OrderTypeResponse processLimitTrailingStopOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
-			  BigDecimal currentPriceOfTicker =	  dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute())  .getPriceOfTicker(orderTypeRequest.getPairAddress()); 
+			  BigDecimal currentPriceOfTicker =	  dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).getPriceOfTicker(orderTypeRequest.getPairAddress(), orderTypeRequest.getCredentials()); 
 			  if (!orderTypeRequest.isLimitTrailingStopPriceMet() && orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) <=  0) {
 				  	OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 					orderTypeResponse.setLimitTrailStopPriceMet(true);
