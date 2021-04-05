@@ -22,8 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 @Service
-//TODO: come back to  re-factor the ugliest code in universe. wtf you wrote. :-(
-public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
+public class DexSubGraphPriceServiceClient  {
 
 	@Resource(name="graphHqlPriceHttpClient")
 	public CloseableHttpClient closeableHttpClient;
@@ -40,6 +39,7 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 	private static final String UNISWAP_SUBGRAPH_URL = "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2";
 	private static final String SUSHISWAP_SUBGRAPH_URL = "https://api.thegraph.com/subgraphs/name/sushiswap/exchange";
 
+	@SuppressWarnings("unused")
 	private static final Map<String, String> DEX_PRICE_URL = ImmutableMap.of(UNISWAP, UNISWAP_SUBGRAPH_URL, SUSHI, SUSHISWAP_SUBGRAPH_URL);
 	
 	private static final String QUERY_PAIR_DATA_0= "{	\"query\": \"{ pair(id: ";
@@ -113,10 +113,5 @@ public class DexSubGraphPriceServiceClient implements DexSubGraphPriceClient {
 		}
         return null;
     }
-	
-	@Override
-	public String getResourceUrl(String route) {
-		return DEX_PRICE_URL.get(route);
-	}
 
 }

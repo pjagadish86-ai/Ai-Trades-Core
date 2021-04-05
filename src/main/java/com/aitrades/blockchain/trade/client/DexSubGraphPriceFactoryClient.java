@@ -11,22 +11,18 @@ import com.aitrades.blockchain.trade.domain.TradeConstants;
 
 @Service
 public class DexSubGraphPriceFactoryClient {
-
-
-	@Autowired
-	private DexSubGraphPriceServiceClient dexSubGraphPriceServiceClient;
 	
 	@Autowired
-	private DexBinanceSmartChainPriceClient dexBinanceSmartChainPriceClient;
+	private DexNativePriceOracleClient priceOracleClient;
 	
 	@Autowired
 	private Map<String, DexSubGraphPriceClient> typesMap;
 
 	@PostConstruct
 	public void init() {
-		typesMap.put(TradeConstants.UNISWAP, dexSubGraphPriceServiceClient);
-		typesMap.put(TradeConstants.SUSHI, dexSubGraphPriceServiceClient);
-		typesMap.put(TradeConstants.PANCAKE, dexBinanceSmartChainPriceClient);
+		typesMap.put(TradeConstants.UNISWAP, priceOracleClient);
+		typesMap.put(TradeConstants.SUSHI, priceOracleClient);
+		typesMap.put(TradeConstants.PANCAKE, priceOracleClient);
 	}
 	
 	public DexSubGraphPriceClient getRoute(String condition) {

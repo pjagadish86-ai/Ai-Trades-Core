@@ -37,7 +37,7 @@ public class OrderProcessGatewayEndpoint {
 	@Transformer(inputChannel = "rabbitMqProcessOrderConsumer", outputChannel = "tradeOrdercomputationChannel")
 	public Map<String, Object> rabbitMqProcessOrderConsumer(byte[] message) throws Exception{
 		Order order  = orderObjectReader.readValue(message);
-		Map<String, Object> aitradesMap = new ConcurrentHashMap<String, Object>();
+		Map<String, Object> aitradesMap = new ConcurrentHashMap<>();
 		aitradesMap.put(ORDER, order);
 		return aitradesMap;
 	}
