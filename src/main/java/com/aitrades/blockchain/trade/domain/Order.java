@@ -33,6 +33,7 @@ public class Order {
 	private Integer orderCode;
 	private String approvedHash;
 	private String read;
+	private boolean isFee;
 	
 	public String getId() {
 		return id;
@@ -135,6 +136,12 @@ public class Order {
 	}
 	public void setRead(String read) {
 		this.read = read;
+	}
+	public boolean isFee() {
+		return isFee;
+	}
+	public void setFee(boolean isFee) {
+		this.isFee = isFee;
 	}
 	@Override
 	public String toString() {
