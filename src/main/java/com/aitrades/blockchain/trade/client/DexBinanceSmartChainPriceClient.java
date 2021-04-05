@@ -1,14 +1,18 @@
 package com.aitrades.blockchain.trade.client;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.web3j.crypto.Credentials;
 import org.web3j.tuples.generated.Tuple3;
 
@@ -36,8 +40,11 @@ public class DexBinanceSmartChainPriceClient implements DexSubGraphPriceClient {
 	private Web3jServiceClient web3jServiceClient;
 
 	private Cryptonator getBNBPrice() throws Exception{
-		HttpGet httpGet = new HttpGet(BNB_USD_PRICE);
-		return cryptonatorObjectReader.readValue(closeableHttpClient.execute(httpGet).getEntity().getContent());
+		try {
+			return web3jServiceClient.getRestTemplate().getForEntity(BNB_USD_PRICE, Cryptonator.class).getBody();
+		} catch (RestClientException e) {
+		}
+		return null;
 	}
 
 	public Tuple3<BigInteger, BigInteger, BigInteger> getReserves(String pairAddress, Credentials credentials) throws Exception{
@@ -52,9 +59,11 @@ public class DexBinanceSmartChainPriceClient implements DexSubGraphPriceClient {
 
 	public BigDecimal calculatePrice(String pairAddress, Credentials credentials) throws Exception {
 		Tuple3<BigInteger, BigInteger, BigInteger> reserves  =  getReserves(pairAddress, credentials);
-		return new BigDecimal(reserves.component1())
-					.multiply(new BigDecimal(getBNBPrice().getTicker().getPrice())).setScale(8, RoundingMode.HALF_UP)
-					.divide(new BigDecimal(reserves.component2()), 8, RoundingMode.HALF_UP);
+		String price = getBNBPrice().getTicker().getPrice();
+		if(StringUtils.isBlank(price)) {
+			return null;
+		}
+		return BigDecimal.valueOf( Double.valueOf(1)/ reserves.component1().divide(reserves.component2()).doubleValue()).multiply(new BigDecimal(price));
 	}
 	
 

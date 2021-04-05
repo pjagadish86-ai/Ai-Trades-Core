@@ -1,9 +1,14 @@
 package com.aitrades.blockchain.trade.domain.price;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonIgnoreProperties(ignoreUnknown = true)	
+@JsonInclude(Include.NON_NULL)
 public class Cryptonator{
 	
     private Ticker ticker;
-    private int timestamp;
     private boolean success;
     private String error;
 	
@@ -15,12 +20,6 @@ public class Cryptonator{
 	}
 	public void setTicker(Ticker ticker) {
 		this.ticker = ticker;
-	}
-	public int getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(int timestamp) {
-		this.timestamp = timestamp;
 	}
 	public boolean isSuccess() {
 		return success;
@@ -35,12 +34,12 @@ public class Cryptonator{
 		this.error = error;
 	}
 	
+	@JsonIgnoreProperties(ignoreUnknown = true)	
+	@JsonInclude(Include.NON_NULL)
 	public static class Ticker{
 		private String base;
 		private String target;
 		private String price;
-		private String volume;
-		private String change;
 		
 		public Ticker() {
 		}
@@ -63,19 +62,6 @@ public class Cryptonator{
 		public void setPrice(String price) {
 			this.price = price;
 		}
-		public String getVolume() {
-			return volume;
-		}
-		public void setVolume(String volume) {
-			this.volume = volume;
-		}
-		public String getChange() {
-			return change;
-		}
-		public void setChange(String change) {
-			this.change = change;
-		}
-	    
 	}
     
 }
