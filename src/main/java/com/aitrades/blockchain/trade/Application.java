@@ -17,9 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
-import org.web3j.protocol.Network;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.websocket.WebSocketClient;
 import org.web3j.protocol.websocket.WebSocketService;
 
@@ -39,7 +37,7 @@ public class Application {
 	
 	@Bean(name="web3jClient")
     public Web3j web3J() {
-        return Web3j.build(new HttpService(Network.ROPSTEN.getNetworkName()));
+        return Web3j.build(webSocketService());
     }
 	
 	@Bean(name = "web3bscjClient")

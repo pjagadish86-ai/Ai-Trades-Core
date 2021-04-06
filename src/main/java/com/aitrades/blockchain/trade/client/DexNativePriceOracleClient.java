@@ -19,8 +19,6 @@ import com.aitrades.blockchain.trade.domain.price.Cryptonator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.collect.ImmutableMap;
 
-import io.reactivex.schedulers.Schedulers;
-
 @Service
 public class DexNativePriceOracleClient implements DexSubGraphPriceClient {
 
@@ -44,10 +42,12 @@ public class DexNativePriceOracleClient implements DexSubGraphPriceClient {
 		EthereumDexContract dexContract = new EthereumDexContract(pairAddress, 
 																  web3jServiceClientFactory.getWeb3jMap().get(route).getWeb3j(), 
 															      credentials);
-		return dexContract.getReserves()
-						  .flowable()
-				          .subscribeOn(Schedulers.io())
-				          .blockingSingle();
+		try {
+			return dexContract.getReserves()
+							  .sendAsync().get();
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 	@Override
@@ -58,11 +58,16 @@ public class DexNativePriceOracleClient implements DexSubGraphPriceClient {
 	@Override
 	public BigDecimal tokenPrice(String pairAddress, String route, Credentials credentials) throws Exception {
 		Tuple3<BigInteger, BigInteger, BigInteger> reserves  =  getReserves(pairAddress, route, credentials);
+		if(reserves == null) {
+			return null;
+		}
 		String price = nativeCoinPrice(route).getTicker().getPrice();
 		if(StringUtils.isBlank(price)) {
 			return null;
 		}
-		return BigDecimal.valueOf( Double.valueOf(1)/ reserves.component1().divide(reserves.component2()).doubleValue()).multiply(new BigDecimal(price));
+		
+		Double priceOFToken = (Double.valueOf(1)/ (reserves.component2().divide(reserves.component1())).doubleValue()) * Double.valueOf(price);
+		return BigDecimal.valueOf(priceOFToken);
 	}
 
 }

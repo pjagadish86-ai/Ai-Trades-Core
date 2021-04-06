@@ -20,7 +20,7 @@ public class OrderDecisioner {
 	public OrderTypeResponse processLimitOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(), orderTypeRequest.getRoute(), orderTypeRequest.getCredentials());
-			if(orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
+			if(currentPriceOfTicker != null && orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
@@ -34,7 +34,7 @@ public class OrderDecisioner {
 	public OrderTypeResponse processStopLossOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(),  orderTypeRequest.getRoute(), orderTypeRequest.getCredentials());
-			if(orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
+			if(currentPriceOfTicker != null && orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
@@ -49,13 +49,13 @@ public class OrderDecisioner {
 		try {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(), orderTypeRequest.getRoute(),  orderTypeRequest.getCredentials());
 			
-			if(orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
+			if(currentPriceOfTicker != null && orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
 			}
 			
-			if(orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
+			if(currentPriceOfTicker != null && orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
@@ -73,12 +73,12 @@ public class OrderDecisioner {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute())
 																		   .tokenPrice(orderTypeRequest.getPairAddress(),  orderTypeRequest.getRoute(), orderTypeRequest.getCredentials());
 			
-			if (orderTypeRequest.getAdjustedPrice() == null || orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) <= 0) {
+			if (currentPriceOfTicker != null && (orderTypeRequest.getAdjustedPrice() == null || orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) <= 0)) {
 				BigDecimal adjustedTrailingPrice = currentPriceOfTicker.subtract(currentPriceOfTicker.multiply(orderTypeRequest.getTrailPercent().divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)));
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setAdjustedPrice(adjustedTrailingPrice);
 				return orderTypeResponse;
-			} else if (orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) > 0) {
+			} else if (currentPriceOfTicker != null && orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) > 0) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
@@ -94,7 +94,7 @@ public class OrderDecisioner {
 	public OrderTypeResponse processLimitTrailingStopOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
 			  BigDecimal currentPriceOfTicker =	  dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(),  orderTypeRequest.getRoute(), orderTypeRequest.getCredentials()); 
-			  if (!orderTypeRequest.isLimitTrailingStopPriceMet() && orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) <=  0) {
+			  if (currentPriceOfTicker != null && (!orderTypeRequest.isLimitTrailingStopPriceMet() && orderTypeRequest.getAdjustedPrice().compareTo(currentPriceOfTicker) <=  0)) {
 				  	OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 					orderTypeResponse.setLimitTrailStopPriceMet(true);
 					return orderTypeResponse;
