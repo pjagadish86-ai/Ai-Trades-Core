@@ -46,7 +46,7 @@ public class EthereumDexContract extends Contract {
                 new Callable<List>() {
 					@Override
                     public List call() throws Exception {
-                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        List<Type> result =  executeCallSingleValueReturn(function, List.class);
                         return convertToNative(result);
                     }
                 });
@@ -63,7 +63,7 @@ public class EthereumDexContract extends Contract {
                 new Callable<List>() {
                     @Override
                     public List call() throws Exception {
-                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        List<Type> result =  executeCallSingleValueReturn(function, List.class);
                         return convertToNative(result);
                     }
                 });
