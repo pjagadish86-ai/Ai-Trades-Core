@@ -62,8 +62,8 @@ public class OrderComputationProcessor {
 		}
 		
 		else if(StringUtils.equalsIgnoreCase(OrderType.STOPLIMIT.name(), orderType)) {
-			orderTypeRequest.setLimitPrice(order.getOrderEntity().getLimitOrder().getLimitPriceBigDecimal());
-			orderTypeRequest.setStopPrice(order.getOrderEntity().getStopOrder().getStopPriceBigDecimal());
+			orderTypeRequest.setLimitPrice(order.getOrderEntity().getStopLimitOrder().getLimitPriceBigDecimal());
+			orderTypeRequest.setStopPrice(order.getOrderEntity().getStopLimitOrder().getStopPriceBigDecimal());
 		}
 		
 		else if(StringUtils.equalsIgnoreCase(OrderType.TRAILLING_STOP.name(), orderType)) {

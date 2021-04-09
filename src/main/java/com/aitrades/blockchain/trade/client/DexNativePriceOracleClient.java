@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.tuples.generated.Tuple3;
@@ -36,6 +38,9 @@ public class DexNativePriceOracleClient implements DexSubGraphPriceClient {
 	private ObjectReader cryptonatorObjectReader;
 	
 	@Autowired
+	private CacheManager cacheManager;
+	
+	@Autowired
 	private Web3jServiceClientFactory web3jServiceClientFactory;
 
 	private Tuple3<BigInteger, BigInteger, BigInteger> getReserves(String pairAddress, String route,  Credentials credentials) {
@@ -52,16 +57,25 @@ public class DexNativePriceOracleClient implements DexSubGraphPriceClient {
 
 	@Override
 	public Cryptonator nativeCoinPrice(String route) throws Exception {
-		return web3jServiceClientFactory.getWeb3jMap().get(route).restTemplate.getForEntity(BLOCKCHAIN_NATIVE_PRICE_ORACLE.get(route), Cryptonator.class).getBody();
+		return web3jServiceClientFactory.getWeb3jMap().get(route).getRestTemplate().getForEntity(BLOCKCHAIN_NATIVE_PRICE_ORACLE.get(route), Cryptonator.class).getBody();
 	}
-
+	
+	@Cacheable(cacheNames = "routePrice")
+    public String getPrice(String route) throws Exception  {
+		if(cacheManager.getCache("routePrices").get(route) != null) {
+            return cacheManager.getCache("routePrice").get(route).get().toString();
+        }
+        return nativeCoinPrice(route).getTicker().getPrice();
+    }
+	
+	
 	@Override
 	public BigDecimal tokenPrice(String pairAddress, String route, Credentials credentials) throws Exception {
 		Tuple3<BigInteger, BigInteger, BigInteger> reserves  =  getReserves(pairAddress, route, credentials);
 		if(reserves == null) {
 			return null;
 		}
-		String price = nativeCoinPrice(route).getTicker().getPrice();
+		String price = getPrice(route);
 		if(StringUtils.isBlank(price)) {
 			return null;
 		}
