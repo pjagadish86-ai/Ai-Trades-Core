@@ -80,9 +80,15 @@ public class OrderProcessGatewayEndpoint {
 	public Map<String, Object> saveToMongoBasedOnOrderTypeChannel(Map<String, Object> tradeOrderMap){
 		Order order = (Order)tradeOrderMap.get(ORDER);
 		if(order.getOrderCode() != null && (order.getOrderCode().equals(83) || order.getOrderCode().equals(84))) {
-			orderRepository.updateOrder(order);
+			if(order.getOrderCode().equals(83)) {
+				order.setRead("AVAL");
+				orderRepository.updateOrder(order);
+				return null;
+			}else if(order.getOrderCode().equals(84)) {
+				return tradeOrderMap;
+			}
 		}
-		return tradeOrderMap;
+		return null;
 	}
 	
 	@ServiceActivator(inputChannel = "sendToOrderSubmitQueueChannel")
