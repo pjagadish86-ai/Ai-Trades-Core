@@ -41,8 +41,6 @@ public class DexNativePriceOracleClient implements DexSubGraphPriceClient {
 	
 	@Autowired
 	private Web3jServiceClientFactory web3jServiceClientFactory;
-	
-	
 	  
     private static com.github.benmanes.caffeine.cache.Cache<String, Cryptonator> tokenCache;   
 
