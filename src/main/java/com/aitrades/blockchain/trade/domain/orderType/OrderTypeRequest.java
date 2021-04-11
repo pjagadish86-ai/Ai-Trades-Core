@@ -12,6 +12,7 @@ public class OrderTypeRequest {
 	private BigDecimal adjustedPrice;
 	private BigDecimal trailPercent;
 	private BigDecimal stopPrice;
+	private String orderSide;
 	
 	private Credentials credentials;
 	private boolean isLimitTrailingStopPriceMet;
@@ -64,6 +65,11 @@ public class OrderTypeRequest {
 	public void setCredentials(Credentials credentials) {
 		this.credentials = credentials;
 	}
-	
+	public String getOrderSide() {
+		return orderSide;
+	}
+	public void setOrderSide(String orderSide) {
+		this.orderSide = orderSide;
+	}
 	
 }

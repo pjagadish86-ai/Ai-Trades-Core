@@ -50,7 +50,7 @@ public class OrderComputationProcessor {
 		orderTypeRequest.setRoute(order.getRoute());
 		orderTypeRequest.setPairAddress(order.getPairData().getPairAddress().getAddress());
 		orderTypeRequest.setCredentials(order.getCredentials());
-		
+		orderTypeRequest.setOrderSide(order.getOrderEntity().getOrderSide());
 		String orderType = order.getOrderEntity().getOrderType();
 		
 		if(StringUtils.equalsIgnoreCase(OrderType.LIMIT.name(), orderType)) {

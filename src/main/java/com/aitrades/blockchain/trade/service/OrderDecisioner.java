@@ -14,13 +14,25 @@ import com.aitrades.blockchain.trade.domain.orderType.OrderTypeResponse;
 @Service
 public class OrderDecisioner {
 	
+	private static final String BUY = "BUY";
+	private static final String SELL = "SELL";
+	
 	@Autowired
 	private DexSubGraphPriceFactoryClient dexSubGraphPriceFactoryClient;
 	
 	public OrderTypeResponse processLimitOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(), orderTypeRequest.getRoute(), orderTypeRequest.getCredentials());
-			if(currentPriceOfTicker != null && orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
+			boolean  triggerOrder= false;
+			if(currentPriceOfTicker != null) {
+				if(currentPriceOfTicker.compareTo(orderTypeRequest.getLimitPrice()) >= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(SELL)) {
+					triggerOrder = true;
+				}else if(currentPriceOfTicker.compareTo(orderTypeRequest.getLimitPrice()) <= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(BUY)) {
+					triggerOrder = true;
+				}
+			}
+			
+			if(triggerOrder) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
@@ -34,11 +46,22 @@ public class OrderDecisioner {
 	public OrderTypeResponse processStopLossOrder(OrderTypeRequest orderTypeRequest) throws Exception {
 		try {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(),  orderTypeRequest.getRoute(), orderTypeRequest.getCredentials());
-			if(currentPriceOfTicker != null && orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
+			boolean  triggerOrder= false;
+			if(currentPriceOfTicker != null) {
+				if(currentPriceOfTicker.compareTo(orderTypeRequest.getStopPrice()) <= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(SELL)) {
+					triggerOrder = true;
+				}else if(currentPriceOfTicker.compareTo(orderTypeRequest.getStopPrice()) >= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(BUY)) {
+					triggerOrder = true;// This is redudanted
+				}
+			}
+			
+			if(triggerOrder) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
 			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,17 +72,29 @@ public class OrderDecisioner {
 		try {
 			BigDecimal currentPriceOfTicker = dexSubGraphPriceFactoryClient.getRoute(orderTypeRequest.getRoute()).tokenPrice(orderTypeRequest.getPairAddress(), orderTypeRequest.getRoute(),  orderTypeRequest.getCredentials());
 			
-			if(currentPriceOfTicker != null && orderTypeRequest.getLimitPrice().compareTo(currentPriceOfTicker) >= 0) {
+			boolean  triggerOrder= false;
+			if(currentPriceOfTicker != null) {
+				if(currentPriceOfTicker.compareTo(orderTypeRequest.getLimitPrice()) >= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(SELL)) {
+					triggerOrder = true;
+				}else if(currentPriceOfTicker.compareTo(orderTypeRequest.getLimitPrice()) <= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(BUY)) {
+					triggerOrder = true;
+				}
+			}
+			
+			if(currentPriceOfTicker != null) {
+				if(currentPriceOfTicker.compareTo(orderTypeRequest.getStopPrice()) <= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(SELL)) {
+					triggerOrder = true;
+				}else if(currentPriceOfTicker.compareTo(orderTypeRequest.getStopPrice()) >= 0 && orderTypeRequest.getOrderSide().equalsIgnoreCase(BUY)) {
+					triggerOrder = true;// This is redudanted
+				}
+			}
+			
+			if(triggerOrder) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
 				return orderTypeResponse;
 			}
 			
-			if(currentPriceOfTicker != null && orderTypeRequest.getStopPrice().compareTo(currentPriceOfTicker) >= 0) {
-				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
-				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
-				return orderTypeResponse;
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
