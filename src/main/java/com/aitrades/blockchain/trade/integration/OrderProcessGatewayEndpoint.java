@@ -58,6 +58,7 @@ public class OrderProcessGatewayEndpoint {
 					 }
 				 }
 				 if(orderTypeResponse.getDecision() != null) {
+					 order.setExecutionPrice(orderTypeResponse.getExecutedPrice());
 					 tradeOrderMap.put(ORDER_DECISION, order.getOrderEntity().getOrderSide());
 				 }
 			 }
