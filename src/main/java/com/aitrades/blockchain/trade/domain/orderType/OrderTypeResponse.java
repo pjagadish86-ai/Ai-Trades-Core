@@ -7,6 +7,7 @@ public class OrderTypeResponse {
 	private String decision;
 	private BigDecimal adjustedPrice;
 	private boolean isLimitTrailStopPriceMet;
+	private BigDecimal executedPrice;
 	
 	public String getDecision() {
 		return decision;
@@ -25,6 +26,12 @@ public class OrderTypeResponse {
 	}
 	public void setLimitTrailStopPriceMet(boolean isLimitTrailStopPriceMet) {
 		this.isLimitTrailStopPriceMet = isLimitTrailStopPriceMet;
+	}
+	public BigDecimal getExecutedPrice() {
+		return executedPrice;
+	}
+	public void setExecutedPrice(BigDecimal executedPrice) {
+		this.executedPrice = executedPrice;
 	}
 	
 }

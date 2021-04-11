@@ -35,6 +35,7 @@ public class OrderDecisioner {
 			if(triggerOrder) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
+				orderTypeResponse.setExecutedPrice(currentPriceOfTicker);
 				return orderTypeResponse;
 			}
 		} catch (Exception e) {
@@ -58,6 +59,7 @@ public class OrderDecisioner {
 			if(triggerOrder) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
+				orderTypeResponse.setExecutedPrice(currentPriceOfTicker);
 				return orderTypeResponse;
 			}
 			
@@ -92,6 +94,7 @@ public class OrderDecisioner {
 			if(triggerOrder) {
 				OrderTypeResponse orderTypeResponse = new OrderTypeResponse();
 				orderTypeResponse.setDecision(OrderDecision.TRADE.name());
+				orderTypeResponse.setExecutedPrice(currentPriceOfTicker);
 				return orderTypeResponse;
 			}
 			

@@ -1,5 +1,6 @@
 package com.aitrades.blockchain.trade.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -34,7 +35,7 @@ public class Order {
 	private String approvedHash;
 	private String read;
 	private boolean isFee;
-	
+	private BigDecimal executionPrice;
 	public String getId() {
 		return id;
 	}
@@ -142,6 +143,13 @@ public class Order {
 	}
 	public void setFee(boolean isFee) {
 		this.isFee = isFee;
+	}
+	
+	public BigDecimal getExecutionPrice() {
+		return executionPrice;
+	}
+	public void setExecutionPrice(BigDecimal executionPrice) {
+		this.executionPrice = executionPrice;
 	}
 	@Override
 	public String toString() {
