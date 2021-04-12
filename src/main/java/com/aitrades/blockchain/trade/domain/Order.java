@@ -36,6 +36,8 @@ public class Order {
 	private String read;
 	private boolean isFee;
 	private BigDecimal executionPrice;
+	private AuditInformation auditInformation;
+	
 	public String getId() {
 		return id;
 	}
@@ -150,6 +152,13 @@ public class Order {
 	}
 	public void setExecutionPrice(BigDecimal executionPrice) {
 		this.executionPrice = executionPrice;
+	}
+	
+	public AuditInformation getAuditInformation() {
+		return auditInformation;
+	}
+	public void setAuditInformation(AuditInformation auditInformation) {
+		this.auditInformation = auditInformation;
 	}
 	@Override
 	public String toString() {
