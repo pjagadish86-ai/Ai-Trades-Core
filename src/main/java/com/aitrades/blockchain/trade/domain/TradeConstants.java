@@ -9,7 +9,9 @@ public final class TradeConstants {
 	public static final String PANCAKE = "PANCAKE";
 	public static final String SUSHI = "SUSHI";
 	public static final String ORDER_DECISION = "ORDER_DECISION";
-
+	public static final String WNATIVE = "WNATIVE";
+	public static final String FACTORY = "FACTORY";
+	public static final String ROUTER = "ROUTER";
 	public static final String SNIPETRANSACTIONREQUEST = "SNIPETRANSACTIONREQUEST";
     public static final String SWAP_ETH_FOR_TOKEN_HASH = "SWAP_ETH_FOR_TOKEN_HASH";
 	public static final String APPROVE_HASH = "APPROVE_HASH";
