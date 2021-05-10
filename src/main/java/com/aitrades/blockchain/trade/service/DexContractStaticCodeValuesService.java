@@ -75,11 +75,8 @@ public class DexContractStaticCodeValuesService {
 		return nativCoinTicker.toLowerCase();
 	}
 	
-	
-	
-	private List<BlockchainExchange> fetchBlockChainExchanges(){
+	public List<BlockchainExchange> fetchBlockChainExchanges(){
 		return  dexContractStaticCodeValueRepository.fetchSupportedBlockchains();
 	}
-	
 	
 }

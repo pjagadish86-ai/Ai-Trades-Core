@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +19,9 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.websocket.WebSocketService;
 
 import com.aitrades.blockchain.trade.CustomWebSocketClient;
+import com.aitrades.blockchain.trade.domain.BlockchainExchange;
 import com.aitrades.blockchain.trade.domain.EndpointConfig;
+import com.aitrades.blockchain.trade.service.DexContractStaticCodeValuesService;
 import com.aitrades.blockchain.trade.service.EndpointConfigServiceResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -30,9 +33,12 @@ public class Web3jServiceClientFactory {
 	private final Map<String, Web3jServiceClient> WEB3J_MAP = new HashMap<>();
 	
 	private static com.github.benmanes.caffeine.cache.Cache<String, List<EndpointConfig>> blockChainExchangesConnections;
-
+	
 	private static final String IPC = "IPC";
 	private static final String HTTP = "HTTP";
+	
+	@Autowired
+	private DexContractStaticCodeValuesService dexContractStaticCodeValuesService;
 	
 	@Autowired
     private Web3jServiceClientFactory() {
@@ -48,9 +54,11 @@ public class Web3jServiceClientFactory {
 		Web3jServiceClient web3jServiceClient = WEB3J_MAP.get(route);
 		if(web3jServiceClient == null) {
 			List<EndpointConfig> endpointConfigs = blockChainExchangesConnections.get(ENDPOINT_CONFIG_URLS, this :: fetchBlockChainExchanges);
+			String blckExchge = dexContractStaticCodeValuesService.fetchBlockChainExchanges().stream()
+					.filter(ex ->ex.getCode().toString().equalsIgnoreCase(route)).findFirst().get().getBlockchainName();
 			for(EndpointConfig endpointConfig : endpointConfigs ) {
-				if(endpointConfig.isEnabled() && StringUtils.equalsIgnoreCase(route, endpointConfig.getExchange())) {
-					WEB3J_MAP.put(endpointConfig.getExchange(), buildWeb3jServiceClient(endpointConfig));
+				if(endpointConfig.isEnabled() && StringUtils.equalsIgnoreCase(blckExchge, endpointConfig.getBlockchain())) {
+					WEB3J_MAP.put(route, buildWeb3jServiceClient(endpointConfig));
 					web3jServiceClient = WEB3J_MAP.get(route);
 				}
 			}
